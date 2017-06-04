@@ -139,13 +139,13 @@ not be sent or received at any other time.**
 The server may respond in three possible ways:
 
  - For a direct data transfer:
-   `AD2#<server uuid>#direct#<password>#%`
+   `AD2#<server uuid>#direct#<one-time code>#%`
  - For a data transfer on another server or port:
-   `AD2#<server uuid>#remote#<ip>#<port>#<password>#%`
+   `AD2#<server uuid>#remote#<ip>#<port>#<one-time code>#%`
  - No data transfers allowed; HTTP only:
    `AD2#<server uuid>#bigonly#%`
 
-The password is intended to prevent abuse of the protocol; it should be a one-time ID.
+The one-time code is intended to prevent abuse of the protocol.
 
 ### Conflict resolution
 
