@@ -91,8 +91,13 @@ c1fe7b62e49019ef87fe117d 2.png
 ...
 ```
 
-The name of the directory must be preserved, as the data may already exist in `base`.
+The name of the asset itself is included in the index, so that the client can check whether or not
+identical data with the same name already exists in `base`.
 (To confirm, simply hash the data in the folder which the name points to in `base`.)
+
+A server does not always need to have its assets in its own storage; a server owner can use an
+external script to generate a server index from their own computer, and then transfer the index
+to the remote server.
 
 ### Sample client-side file structure
 
@@ -210,8 +215,20 @@ The assets that could not be found, but are present in the index, are marked for
 ### Direct and remote data transfer
 
 #### Handshake
-This data transfer process begins with `ADTB#<password>#%`. A rejected password is an immediate
-disconnect; otherwise, the server responds likewise with `ADTB#%`.
+This data transfer process begins with `ADTB#<one-time code>#<number of assets to be transferred>#%`.
+
+The client is expected to uphold the promise regarding the number of assets to be transferred. The
+purpose of this is to provide a self-imposed limit on asset transfers for DoS prevention: an
+attacker cannot hog the bandwidth if there is a limit on the number of assets it can transfer. An
+excess number of connects/disconnects can then be detected to ban the attacker.
+
+The server may disconnect the client if:
+
+ - the one-time code is incorrect
+ - the number of assets to be transferred is an invalid number, less than one, or greater than a
+   specific threshold (10 is recommended)
+
+Otherwise, the server responds likewise with `ADTB#%`.
 
 #### Transfer
 Each TCP packet will only contain one header and one chunk of the file compressed using zlib.
@@ -231,6 +248,10 @@ The file ends with `ADTFE#%`. The client makes no further requests until the ass
 In a remote data transfer session, the client may disconnect from the server when there are no more
 assets to download. In a local transfer session, the client simply continues to the next step in the
 process.
+
+The server may disconnect the client if it requests anything in a certain blacklist, such as a
+vanilla asset or an asset exceeding 3 MB, or if the client exceeds its promised number of
+transferred assets.
 
 ### End
 When the client is done with the data transfer and has effectively finished the asset download
