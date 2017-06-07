@@ -164,7 +164,10 @@ handshake.
 The server will provide the file index.
 (See the "[Server index](#server-index)" section for what the index looks like.)
 
-`ADI#<raw file data>#%`
+`ADI#<asset type>#<hash 1>#<name 1>#[hash 2]#[name 2]#...#[hash n]#[name n]#%`
+
+Example:
+`ADI#backgrounds#58b643ff805be3ef530babbc#birthday#4b2a14b27e4d5f83ef62ffdb#default#...#%`
 
 The client then writes the file index to `index.txt` in the server's directory.
 
